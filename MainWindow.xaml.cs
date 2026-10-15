@@ -63,7 +63,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         ChromeHelper.Attach(this, 48, // 必须在构造函数里，放 Loaded 里钩子永不触发
-            new FrameworkElement[] { BtnSettings, BtnMin, BtnMax, BtnClose });
+            new FrameworkElement[] { BtnAbout, BtnSettings, BtnMin, BtnMax, BtnClose });
 
         // 真实亚克力模糊（项目默认关闭；如需开启可在 settings.ini 置 GlassEffect=1）
         SourceInitialized += (s, e) => ApplyGlass();
@@ -982,6 +982,15 @@ public partial class MainWindow : Window
 
     private void BtnAboutClose_Click(object sender, RoutedEventArgs e) =>
         AboutOverlay.Visibility = Visibility.Collapsed;
+
+    private void AboutOverlay_Backdrop_Click(object sender, MouseButtonEventArgs e) =>
+        AboutOverlay.Visibility = Visibility.Collapsed;
+
+    private void DeleteOverlay_Backdrop_Click(object sender, MouseButtonEventArgs e)
+    {
+        DeleteOverlay.Visibility = Visibility.Collapsed;
+        _deleting = null;
+    }
 
     private void OpenSettings()
     {

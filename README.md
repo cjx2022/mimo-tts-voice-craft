@@ -6,7 +6,7 @@
 
 **非官方** MiMo-V2.5-TTS 语音合成桌面工作台 · Windows / .NET 8 / WPF
 
-版本 **0.8.0** · MIT License · © 2026 BillChen
+版本 **0.8.1** · MIT License · © 2026 BillChen
 
 </div>
 
@@ -89,7 +89,13 @@ dotnet run --project _probe -- <your-api-key> [参考音频路径]
 | `--page=design\|settings\|about\|rename\|delete` | 截图前直入指定界面 |
 | `--audiotest=<path>` | 静音（Volume=0）自检播放器：自动播放 / 暂停 / 继续 / 定位 / 播完 / 切换 / 连点，结果写文件 |
 
-`tools/` 下附带两个验证脚本：`win_probe.py`（PrintWindow 合成结果采样）、`png_sample.py`（PNG 反滤波 + 接缝检测）。
+`tools/` 下附带三个验证脚本：
+
+| 脚本 | 用途 |
+|---|---|
+| `win_probe.py` | PrintWindow 抓窗口合成结果并采样（判断是否黑屏 / 玻璃层是否正常） |
+| `png_sample.py` | PNG 反滤波 + 逐行扫描，检测背景是否有硬接缝 |
+| `hittest_probe.py` | `SendMessage(WM_NCHITTEST)` 逐点验证标题栏按钮真的可点（避免按钮被当成拖动区） |
 
 ## 隐私
 

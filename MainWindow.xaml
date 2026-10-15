@@ -100,7 +100,7 @@
                            RenderOptions.BitmapScalingMode="HighQuality" />
                     <TextBlock Text="MiMo TTS Voice Craft" Margin="10,0,0,0" VerticalAlignment="Center"
                                FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" />
-                    <TextBlock x:Name="TitleHint" Text="v0.8.0 · 非官方客户端" Margin="12,2,0,0"
+                    <TextBlock x:Name="TitleHint" Text="v0.8.1 · 非官方客户端" Margin="12,2,0,0"
                                VerticalAlignment="Center" Style="{DynamicResource Hint}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -468,7 +468,7 @@
                 <!-- ===== 关于 / 版权申明 ===== -->
                 <Grid x:Name="AboutOverlay" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3"
                       Visibility="Collapsed">
-                    <Rectangle Fill="#88000000" />
+                    <Rectangle Fill="#88000000" MouseLeftButtonDown="AboutOverlay_Backdrop_Click" />
                     <Border Style="{DynamicResource Card}" Width="560" Padding="26,22"
                             Background="{DynamicResource CardStrongBrush}"
                             VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -513,7 +513,7 @@
                 <!-- ===== 删除确认浮层 ===== -->
                 <Grid x:Name="DeleteOverlay" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3"
                       Visibility="Collapsed">
-                    <Rectangle Fill="#77000000" />
+                    <Rectangle Fill="#77000000" MouseLeftButtonDown="DeleteOverlay_Backdrop_Click" />
                     <Border Style="{DynamicResource Card}" Width="470" Padding="22,18"
                             Background="{DynamicResource CardStrongBrush}"
                             VerticalAlignment="Center" HorizontalAlignment="Center">
