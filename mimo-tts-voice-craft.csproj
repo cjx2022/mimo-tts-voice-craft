@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12.0</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
+
+    <AssemblyName>mimo-tts-voice-craft</AssemblyName>
+    <RootNamespace>MimoTtsVoiceCraft</RootNamespace>
+
+    <AssemblyTitle>MiMo TTS Voice Craft</AssemblyTitle>
+    <Product>MiMo TTS Voice Craft</Product>
+    <Description>非官方 MiMo-V2.5-TTS 三模型语音合成桌面工作台（预置音色 / 音色克隆 / 音色设计）</Description>
+    <Company>BillChen</Company>
+    <Authors>BillChen</Authors>
+    <Copyright>Copyright (c) 2026 BillChen. MIT License.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/cjx2022/mimo-tts-voice-craft</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/cjx2022/mimo-tts-voice-craft</PackageProjectUrl>
+
+    <Version>0.8.0</Version>
+    <AssemblyVersion>0.8.0.0</AssemblyVersion>
+    <FileVersion>0.8.0.0</FileVersion>
+    <InformationalVersion>0.8.0</InformationalVersion>
+
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <NeutralLanguage>zh-CN</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WAV/MP3 精确播放（暂停/定位/无起播裁切），WPF 自带 MediaPlayer 播 PCM 会吞开头 -->
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\logo.png" />
+  </ItemGroup>
+
+  <!-- 辅助目录不参与主程序编译 -->
+  <ItemGroup>
+    <Compile Remove="_probe\**" />
+    <None Remove="_probe\**" />
+    <Page Remove="_probe\**" />
+    <Compile Remove="tools\**" />
+    <None Remove="tools\**" />
+  </ItemGroup>
+
+</Project>

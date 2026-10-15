@@ -1,0 +1,25 @@
+# 构建产物
+bin/
+obj/
+app/
+app-*/
+publish/
+publish-sc/
+
+# 本地生成物与用户输出目录
+output/
+*.wav
+*.mp3
+*.pcm
+
+# 自检与调试残留
+_*.png
+_audiotest*.txt
+*.err.txt
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
