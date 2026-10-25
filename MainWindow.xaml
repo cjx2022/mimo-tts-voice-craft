@@ -100,7 +100,7 @@
                            RenderOptions.BitmapScalingMode="HighQuality" />
                     <TextBlock Text="MiMo TTS Voice Craft" Margin="10,0,0,0" VerticalAlignment="Center"
                                FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" />
-                    <TextBlock x:Name="TitleHint" Text="v0.8.1 · 非官方客户端" Margin="12,2,0,0"
+                    <TextBlock x:Name="TitleHint" Text="v0.8.2 · 非官方客户端" Margin="12,2,0,0"
                                VerticalAlignment="Center" Style="{DynamicResource Hint}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -247,14 +247,20 @@
                     <Border Grid.Row="1" Style="{DynamicResource Card}" Padding="14,12" Margin="0,0,0,10">
                         <StackPanel>
                             <Grid Margin="0,0,0,8">
-                                <TextBlock Text="合成文本（assistant 消息）" Style="{DynamicResource Label}" />
-                                <TextBlock HorizontalAlignment="Right" Style="{DynamicResource Hint}"
-                                           Text="可开头加 (风格) 标签、文中插 [音频标签]，如 (活泼)…(吸气)…" />
+                                <TextBlock Text="合成文本" Style="{DynamicResource Label}" />
+                                <TextBlock x:Name="TxtTextCount" HorizontalAlignment="Right"
+                                           Style="{DynamicResource Hint}" Text="0 字"
+                                           ToolTip="当前文本字数；音色设计模式下会同时显示上限" />
                             </Grid>
                             <TextBox x:Name="TxtText" Style="{DynamicResource ModernTextBox}" MinHeight="88"
                                      AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
                                      VerticalContentAlignment="Top" Padding="9,6"
+                                     TextChanged="TxtText_TextChanged"
                                      Text="大家好，这里是 MiMo 语音合成工作台。春天来了，风变得温暖，我们一起去跑步吧！" />
+                            <TextBlock x:Name="DesignLimitHint" Style="{DynamicResource Hint}" Margin="1,7,0,0"
+                                       TextWrapping="Wrap" Visibility="Collapsed"
+                                       Foreground="{DynamicResource SubTextBrush}"
+                                       Text="音色设计大模型单次输出约 1 分钟音频，实测超过 300 字会前后丢字，因此上限 300 字。更长的文本请切到「预置音色」或「音色克隆」。" />
                         </StackPanel>
                     </Border>
 

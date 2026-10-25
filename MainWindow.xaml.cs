@@ -21,6 +21,15 @@ public partial class MainWindow : Window
         { "mimo_default", "冰糖", "茉莉", "苏打", "白桦", "Mia", "Chloe", "Milo", "Dean" };
 
     private TtsModelKind _kind = TtsModelKind.Preset;
+
+    /// <summary>
+    /// 音色设计（voicedesign）模型的实用字数上限。
+    /// 实测：该模型输出 token 恒定在 365~526，对应音频 58~84 秒，与输入字数无关；
+    /// 300 字以内内容完整，超过后表现为「开头编造、中间跳跃、结尾断掉」。
+    /// 预置 / 克隆不受此限（预置 2100 字实测 406~418 秒完整）。
+    /// </summary>
+    private const int DesignTextLimit = 300;
+
     // NAudio 播放（每次加载新建一对 output+stream，切换时先释放，避免多路叠加）
     private WaveOutEvent _out;
     private WaveStream _stream;
@@ -111,6 +120,7 @@ public partial class MainWindow : Window
 
         Loaded += (_, _) =>
         {
+            UpdateTextMetrics();               // XAML 里初始文本的字数统计
             _ = Task.Run(WarmUpAudioDevice);   // 后台预热音频端点（静音），避免首次播放丢首缓冲
             RunSelfCheckIfRequested();
             if (App.AudioTestPath != null) RunAudioSelfTest();
@@ -454,6 +464,47 @@ public partial class MainWindow : Window
         PanelDesign.Visibility = _kind == TtsModelKind.Design ? Visibility.Visible : Visibility.Collapsed;
         CardStyle.Visibility = _kind == TtsModelKind.Design ? Visibility.Collapsed : Visibility.Visible;
         ModelIdText.Text = ModelIds.Of(_kind);
+        UpdateTextMetrics();
+    }
+
+    // ---------------- 字数统计 / 设计模型上限 ----------------
+
+    private void TxtText_TextChanged(object sender, TextChangedEventArgs e) => UpdateTextMetrics();
+
+    /// <summary>
+    /// 刷新「合成文本」右上角字数统计：
+    /// 预置 / 克隆只显示「N 字」；音色设计显示「N / 300 字」，接近与超限分别用警示色。
+    /// 同时把文本框 MaxLength 与模式绑定，从输入源头挡住超限。
+    /// </summary>
+    private void UpdateTextMetrics()
+    {
+        if (TxtText == null || TxtTextCount == null || DesignLimitHint == null) return;
+
+        int n = TxtText.Text?.Length ?? 0;
+        bool design = _kind == TtsModelKind.Design;
+
+        DesignLimitHint.Visibility = design ? Visibility.Visible : Visibility.Collapsed;
+
+        if (design)
+        {
+            TxtTextCount.Text = $"{n} / {DesignTextLimit} 字";
+            var near = n >= DesignTextLimit - 30;
+            TxtTextCount.Foreground = n > DesignTextLimit
+                ? (Brush)FindResource("ErrBrush")
+                : near ? (Brush)FindResource("WarnBrush") : (Brush)FindResource("MutedBrush");
+            // 说明文字跟着状态变色：平时中性，接近/达到上限转警示，超限转错误
+            DesignLimitHint.Foreground = n > DesignTextLimit
+                ? (Brush)FindResource("ErrBrush")
+                : near ? (Brush)FindResource("WarnBrush") : (Brush)FindResource("SubTextBrush");
+            TxtText.MaxLength = DesignTextLimit;
+        }
+        else
+        {
+            TxtTextCount.Text = $"{n} 字";
+            TxtTextCount.Foreground = (Brush)FindResource("MutedBrush");
+            DesignLimitHint.Foreground = (Brush)FindResource("SubTextBrush");
+            TxtText.MaxLength = 0;          // 0 = 不限制
+        }
     }
 
     private void BuildDesignDims()
@@ -582,10 +633,28 @@ public partial class MainWindow : Window
             return;
         }
 
+        var text = TxtText.Text ?? "";
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            Log("合成文本为空。");
+            StatusLeft.Text = "请先输入要合成的文本";
+            TxtText.Focus();
+            return;
+        }
+        // 音色设计模型有硬输出上限，超限不会报错、只会静默丢字，故在发请求前挡住
+        if (_kind == TtsModelKind.Design && text.Length > DesignTextLimit)
+        {
+            Log($"✗ 音色设计单次上限 {DesignTextLimit} 字，当前 {text.Length} 字（超出 {text.Length - DesignTextLimit} 字）。" +
+                "该模型超出后会前后丢字，请删减，或切换到「预置音色」/「音色克隆」。");
+            StatusLeft.Text = $"音色设计上限 {DesignTextLimit} 字，当前超出 {text.Length - DesignTextLimit} 字";
+            TxtText.Focus();
+            return;
+        }
+
         var job = new TtsJob
         {
             Kind = _kind,
-            Text = TxtText.Text,
+            Text = text,
             Instruction = TxtStyle.Text,
             VoiceId = CmbVoice.SelectedItem as string ?? "mimo_default",
             RefPath = TxtRefPath.Text,
